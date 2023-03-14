@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:food_ordering_app/welcome/TextField.dart';
 
 class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -34,11 +35,13 @@ class LoginPage extends StatelessWidget {
           ),
           Column(
             children: [
-              textField("User name/Email", Icon(Icons.email)),
+              MyTextField(
+                  "Email", Icon(Icons.email), false, TextEditingController()),
               SizedBox(
                 height: 30,
               ),
-              textField('Password', Icon(Icons.lock))
+              MyTextField(
+                  'Password', Icon(Icons.lock), true, TextEditingController())
             ],
           ),
           Container(
@@ -83,19 +86,6 @@ class LoginPage extends StatelessWidget {
           )
         ]),
       ),
-    );
-  }
-
-  Widget textField(String hint, Icon icon) {
-    return TextFormField(
-      decoration: InputDecoration(
-          prefixIcon: icon,
-          hintText: hint,
-          hintStyle: const TextStyle(
-            color: Colors.black,
-          ),
-          enabledBorder: const UnderlineInputBorder(
-              borderSide: const BorderSide(color: Colors.green))),
     );
   }
 }
