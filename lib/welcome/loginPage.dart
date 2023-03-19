@@ -11,7 +11,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _obscureText=true;
+  bool _obscureText = true;
+  bool loader = false;
   TextEditingController userName = TextEditingController();
 
   TextEditingController password = TextEditingController();
@@ -31,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 30),
         child:
-            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Container(
             height: 50,
             margin: EdgeInsets.only(right: 180),
@@ -73,7 +74,8 @@ class _LoginPageState extends State<LoginPage> {
               )
             ],
           ),
-          Container(
+          loader ? Row(mainAxisAlignment: MainAxisAlignment.center,
+            children: const [CircularProgressIndicator()]):Container(
             height: 40,
             width: 200,
             child: ElevatedButton(
@@ -84,6 +86,9 @@ class _LoginPageState extends State<LoginPage> {
                         side: BorderSide(color: Colors.green, width: 2))),
                 onPressed: () {
                   if (validataion()) {
+                    setState(() {
+                      loader=true;
+                    });
                     signInUsingEmailPassword();
                   }
                 },
@@ -127,10 +132,13 @@ class _LoginPageState extends State<LoginPage> {
     User user;
     try {
       UserCredential userCredential =
-          await firebaseAuth.signInWithEmailAndPassword(
-              email: userName.text.trim(), password: password.text.trim());
+      await firebaseAuth.signInWithEmailAndPassword(
+          email: userName.text.trim(), password: password.text.trim());
       user = userCredential.user!;
       showToast("Login Successful");
+      setState(() {
+        loader=false;
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         showToast('No user found for that email.');
@@ -140,6 +148,7 @@ class _LoginPageState extends State<LoginPage> {
         print('Wrong password provided.');
       }
     }
+    loader=false;
   }
 
   void showToast(String msg) {
@@ -157,10 +166,14 @@ class _LoginPageState extends State<LoginPage> {
     RegExp emailRegExp = RegExp(
         r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
 
-    if (userName.text.trim().isEmpty) {
+    if (userName.text
+        .trim()
+        .isEmpty) {
       showToast("User Name can't be empty");
       return false;
-    } else if (password.text.trim().isEmpty) {
+    } else if (password.text
+        .trim()
+        .isEmpty) {
       showToast("Password can't be empty");
       return false;
     } else if (!emailRegExp.hasMatch(userName.text)) {
