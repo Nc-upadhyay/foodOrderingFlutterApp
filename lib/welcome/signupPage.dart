@@ -1,6 +1,7 @@
-import 'dart:html';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -18,92 +19,90 @@ class _SingUpPaggeState extends State<SingUpPagge> {
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
 
-  void validation() {
-    if (firstName.text.trim().isEmpty || firstName.text.trim() == null) {
+  bool validation() {
+    RegExp emailRegExp = RegExp(
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
+    if (firstName.text.trim().isEmpty) {
       showToast("first Name is empty");
-      return;
-    } else if (lastName.text.trim().isEmpty || lastName.text.trim() == null) {
+      return false;
+    } else if (lastName.text.trim().isEmpty) {
       showToast("Last Name is empty");
-      return;
-    } else if (email.text.trim().isEmpty || email.text.trim() == null) {
-      showToast("Email Name is empty");
-      return;
+      return false;
+    } else if (email.text.trim().isEmpty) {
+      showToast("Email Name is empty ");
+      return false;
     }
-    if (password.text.trim().isEmpty || password.text.trim() == null) {
+    if (password.text.trim().isEmpty) {
       showToast("Password Name is empty");
-      return;
+      return false;
     }
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: globalKey,
-      body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 50),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  height: 100,
-                  child: AnimatedTextKit(repeatForever: true, animatedTexts: [
-                    FadeAnimatedText(
-                      'Sign up',
-                      textStyle: TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green),
-                    ),
-                  ]),
-                ),
-                Column(
+      body: Container(
+        margin: EdgeInsets.symmetric(horizontal: 50),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                height: 50,
+                child: AnimatedTextKit(repeatForever: true, animatedTexts: [
+                  FadeAnimatedText(
+                    'Sign up',
+                    textStyle: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green),
+                  ),
+                ]),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
                   children: [
                     MyTextField(
                         "First Name", Icon(Icons.person), false, firstName),
-                    const SizedBox(
-                      height: 10,
-                    ),
+
                     MyTextField(
                         "Last Name", Icon(Icons.person), false, lastName),
-                    SizedBox(
-                      height: 10,
-                    ),
+
                     MyTextField("Email", Icon(Icons.email), false, email),
-                    SizedBox(
-                      height: 10,
-                    ),
+
                     MyTextField("Passowrd", Icon(Icons.lock), true, password),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    button("Cancel", Colors.black, Colors.white, context),
-                    SizedBox(
-                      width: 50,
-                    ),
-                    button("Sign Up", Colors.white, Colors.green, context),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AnimatedTextKit(
-                      repeatForever: true,
-                      animatedTexts: [
-                        WavyAnimatedText("Create Account",
-                            textStyle: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black))
-                      ],
-                    ),
-                  ],
-                )
-              ]),
-        ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  button("Cancel", Colors.black, Colors.white, context),
+                  SizedBox(
+                    width: 50,
+                  ),
+                  button("Sign Up", Colors.white, Colors.green, context),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AnimatedTextKit(
+                    repeatForever: true,
+                    animatedTexts: [
+                      WavyAnimatedText("Create Account",
+                          textStyle: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black))
+                    ],
+                  ),
+                ],
+              )
+            ]),
       ),
     );
   }
@@ -120,7 +119,8 @@ class _SingUpPaggeState extends State<SingUpPagge> {
           if (name == "Cancel") {
             Navigator.pushNamed(context, 'home');
           } else {
-            validation();
+            if(validation());
+            signUp();
           }
         },
         child: Text(name, style: TextStyle(fontSize: 20, color: textColors)));
@@ -135,5 +135,37 @@ class _SingUpPaggeState extends State<SingUpPagge> {
         backgroundColor: Colors.red,
         textColor: Colors.white,
         fontSize: 16.0);
+  }
+  Future signUp() async
+  {
+    try {
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email.text.trim(),
+        password: password.text.trim(),
+      );
+      showToast("Sign Up Successful");
+      saveUserData();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        showToast("he password provided is too weak.");
+        showToast('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        showToast('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
+
+
+
+  }
+  Future saveUserData() async{
+    FirebaseFirestore.instance.collection("userData").doc().set({
+      "firstName":firstName.text,
+      "lastName":lastName.text,
+      "email":email.text,
+      "password":password.text
+    });
+    print("Data Store");
   }
 }
