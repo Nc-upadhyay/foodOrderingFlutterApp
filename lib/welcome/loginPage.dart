@@ -1,8 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:food_ordering_app/welcome/TextField.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  bool _obscureText=true;
+  TextEditingController userName = TextEditingController();
+
+  TextEditingController password = TextEditingController();
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -34,11 +47,30 @@ class LoginPage extends StatelessWidget {
           ),
           Column(
             children: [
-              textField("User name/Email", Icon(Icons.email)),
+              MyTextField("Email", Icon(Icons.email), false, userName),
               SizedBox(
                 height: 30,
               ),
-              textField('Password', Icon(Icons.lock))
+              TextFormField(
+                obscureText: _obscureText,
+                controller: password,
+                decoration: InputDecoration(
+                    hintText: "Enter Password",
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscureText
+                          ? Icons.visibility_off
+                          : Icons.visibility),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                        showToast("${userName.text}  ${password.text}");
+                      },
+                    ),
+                    prefixIcon: Icon(Icons.lock),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green))),
+              )
             ],
           ),
           Container(
@@ -50,7 +82,11 @@ class LoginPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                         side: BorderSide(color: Colors.green, width: 2))),
-                onPressed: () {},
+                onPressed: () {
+                  if (validataion()) {
+                    signInUsingEmailPassword();
+                  }
+                },
                 child: Text(
                   "Log In",
                   style: TextStyle(
@@ -86,16 +122,52 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget textField(String hint, Icon icon) {
-    return TextFormField(
-      decoration: InputDecoration(
-          prefixIcon: icon,
-          hintText: hint,
-          hintStyle: const TextStyle(
-            color: Colors.black,
-          ),
-          enabledBorder: const UnderlineInputBorder(
-              borderSide: const BorderSide(color: Colors.green))),
-    );
+  Future signInUsingEmailPassword() async {
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    User user;
+    try {
+      UserCredential userCredential =
+          await firebaseAuth.signInWithEmailAndPassword(
+              email: userName.text.trim(), password: password.text.trim());
+      user = userCredential.user!;
+      showToast("Login Successful");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        showToast('No user found for that email.');
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        showToast('Wrong password provided.');
+        print('Wrong password provided.');
+      }
+    }
+  }
+
+  void showToast(String msg) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
+  bool validataion() {
+    RegExp emailRegExp = RegExp(
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
+
+    if (userName.text.trim().isEmpty) {
+      showToast("User Name can't be empty");
+      return false;
+    } else if (password.text.trim().isEmpty) {
+      showToast("Password can't be empty");
+      return false;
+    } else if (!emailRegExp.hasMatch(userName.text)) {
+      showToast("Enter valid password");
+      return false;
+    }
+
+    return true;
   }
 }

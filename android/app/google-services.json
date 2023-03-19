@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "888683203817",
+    "project_id": "food-ordering-flutter-app",
+    "storage_bucket": "food-ordering-flutter-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888683203817:android:e80eb76146288cda413478",
+        "android_client_info": {
+          "package_name": "com.example.food_ordering_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "888683203817-u05tvuuja8a3j30pp0schitk1oarqmom.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYAltF1IVyr7qdALpksPvv0h_OIyCswX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "888683203817-u05tvuuja8a3j30pp0schitk1oarqmom.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
