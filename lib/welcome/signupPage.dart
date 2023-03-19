@@ -13,6 +13,8 @@ class SingUpPagge extends StatefulWidget {
 }
 
 class _SingUpPaggeState extends State<SingUpPagge> {
+  bool showPassword=true;
+  bool loading=false;
   GlobalKey<ScaffoldState> globalKey = GlobalKey();
   TextEditingController firstName = new TextEditingController();
   TextEditingController lastName = new TextEditingController();
@@ -73,15 +75,33 @@ class _SingUpPaggeState extends State<SingUpPagge> {
 
                     MyTextField("Email", Icon(Icons.email), false, email),
 
-                    MyTextField("Passowrd", Icon(Icons.lock), true, password),
+                    TextFormField(
+                      obscureText: showPassword,
+                      controller: password,
+                      decoration: InputDecoration(
+                          hintText: "Password",
+                          prefixIcon: Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(showPassword ? Icons.visibility_off :Icons.visibility),
+                            onPressed: (){
+                              setState(() {
+                                showPassword=!showPassword;
+                              });
+                            },
+                          ),
+                          enabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green))),
+                    ),
                   ],
                 ),
               ),
-              Row(
+              loading?Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [CircularProgressIndicator()],): Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   button("Cancel", Colors.black, Colors.white, context),
-                  SizedBox(
+                  const SizedBox(
                     width: 50,
                   ),
                   button("Sign Up", Colors.white, Colors.green, context),
@@ -119,8 +139,12 @@ class _SingUpPaggeState extends State<SingUpPagge> {
           if (name == "Cancel") {
             Navigator.pushNamed(context, 'home');
           } else {
-            if(validation());
-            signUp();
+            if(validation()) {
+              setState(() {
+                loading=true;
+              });
+              signUp();
+            }
           }
         },
         child: Text(name, style: TextStyle(fontSize: 20, color: textColors)));
@@ -155,7 +179,9 @@ class _SingUpPaggeState extends State<SingUpPagge> {
     } catch (e) {
       print(e);
     }
-
+setState(() {
+  loading=false;
+});
 
 
   }
