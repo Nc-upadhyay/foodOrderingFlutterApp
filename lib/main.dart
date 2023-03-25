@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:food_ordering_app/welcome/WelcomeScreen.dart';
 import 'package:food_ordering_app/welcome/loginPage.dart';
 import 'package:food_ordering_app/welcome/signupPage.dart';
+
+import 'homeScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,16 +16,24 @@ void main() async {
 class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: 'home',
       routes: {
-        'home': (context) => WelcomeScreen(),
+        'welcomeScreen': (context) => WelcomeScreen(),
         'login': (context) => LoginPage(),
-        'signUp': (context) => SingUpPagge()
+        'signUp': (context) => SingUpPagge(),
+        'home': (context) => const HomeScreen()
       },
       title: 'Flutter Demo',
-      theme: ThemeData(),
-      home: WelcomeScreen(),
-      debugShowCheckedModeBanner: false,
+
+      home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (index, sncspshort) {
+            if (sncspshort.hasData) {
+              return HomeScreen();
+            } else
+              return LoginPage();
+          }),
     );
   }
 }

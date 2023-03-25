@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:food_ordering_app/homeScreen.dart';
 import 'package:food_ordering_app/welcome/TextField.dart';
 
 class LoginPage extends StatefulWidget {
@@ -20,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff2b2b2b),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios,
@@ -135,7 +136,9 @@ class _LoginPageState extends State<LoginPage> {
       await firebaseAuth.signInWithEmailAndPassword(
           email: userName.text.trim(), password: password.text.trim());
       user = userCredential.user!;
+      Navigator.pushNamed(context, "home");
       showToast("Login Successful");
+
       setState(() {
         loader=false;
       });

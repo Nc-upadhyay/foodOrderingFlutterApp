@@ -1,4 +1,3 @@
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,8 +12,8 @@ class SingUpPagge extends StatefulWidget {
 }
 
 class _SingUpPaggeState extends State<SingUpPagge> {
-  bool showPassword=true;
-  bool loading=false;
+  bool showPassword = true;
+  bool loading = false;
   GlobalKey<ScaffoldState> globalKey = GlobalKey();
   TextEditingController firstName = new TextEditingController();
   TextEditingController lastName = new TextEditingController();
@@ -69,12 +68,9 @@ class _SingUpPaggeState extends State<SingUpPagge> {
                   children: [
                     MyTextField(
                         "First Name", Icon(Icons.person), false, firstName),
-
                     MyTextField(
                         "Last Name", Icon(Icons.person), false, lastName),
-
                     MyTextField("Email", Icon(Icons.email), false, email),
-
                     TextFormField(
                       obscureText: showPassword,
                       controller: password,
@@ -82,10 +78,12 @@ class _SingUpPaggeState extends State<SingUpPagge> {
                           hintText: "Password",
                           prefixIcon: Icon(Icons.lock),
                           suffixIcon: IconButton(
-                            icon: Icon(showPassword ? Icons.visibility_off :Icons.visibility),
-                            onPressed: (){
+                            icon: Icon(showPassword
+                                ? Icons.visibility_off
+                                : Icons.visibility),
+                            onPressed: () {
                               setState(() {
-                                showPassword=!showPassword;
+                                showPassword = !showPassword;
                               });
                             },
                           ),
@@ -95,18 +93,21 @@ class _SingUpPaggeState extends State<SingUpPagge> {
                   ],
                 ),
               ),
-              loading?Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [CircularProgressIndicator()],): Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  button("Cancel", Colors.black, Colors.white, context),
-                  const SizedBox(
-                    width: 50,
-                  ),
-                  button("Sign Up", Colors.white, Colors.green, context),
-                ],
-              ),
+              loading
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [CircularProgressIndicator()],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        button("Cancel", Colors.black, Colors.white, context),
+                        const SizedBox(
+                          width: 50,
+                        ),
+                        button("Sign Up", Colors.white, Colors.green, context),
+                      ],
+                    ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -137,11 +138,11 @@ class _SingUpPaggeState extends State<SingUpPagge> {
                     color: Color.fromARGB(255, 163, 76, 175), width: 2))),
         onPressed: () {
           if (name == "Cancel") {
-            Navigator.pushNamed(context, 'home');
+            Navigator.pushNamed(context, 'welcomeScreen');
           } else {
-            if(validation()) {
+            if (validation()) {
               setState(() {
-                loading=true;
+                loading = true;
               });
               signUp();
             }
@@ -160,10 +161,11 @@ class _SingUpPaggeState extends State<SingUpPagge> {
         textColor: Colors.white,
         fontSize: 16.0);
   }
-  Future signUp() async
-  {
+
+  Future signUp() async {
     try {
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email.text.trim(),
         password: password.text.trim(),
       );
@@ -179,18 +181,17 @@ class _SingUpPaggeState extends State<SingUpPagge> {
     } catch (e) {
       print(e);
     }
-setState(() {
-  loading=false;
-});
-
-
+    setState(() {
+      loading = false;
+    });
   }
-  Future saveUserData() async{
+
+  Future saveUserData() async {
     FirebaseFirestore.instance.collection("userData").doc().set({
-      "firstName":firstName.text,
-      "lastName":lastName.text,
-      "email":email.text,
-      "password":password.text
+      "firstName": firstName.text,
+      "lastName": lastName.text,
+      "email": email.text,
+      "password": password.text
     });
     print("Data Store");
   }
