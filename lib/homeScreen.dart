@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           width: 80,
           height: 80,
-          padding: EdgeInsets.only(left: 20),
+          margin: EdgeInsets.only(left: 10),
           decoration: BoxDecoration(
               color: Colors.grey,
               borderRadius: BorderRadius.circular(10),
@@ -72,44 +72,61 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          TextField(
-            decoration: InputDecoration(
-                hintText: 'Search Food',
-                hintStyle: TextStyle(color: Colors.white, fontSize: 20),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
-                filled: true,
-                fillColor: Color(0xff3b3b3b),
-                border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(15))),
-          ),
-          SizedBox(height: 10),
-          Wrap(children: [
-            ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int position) {
-                  return foodCatergryContainer(position);
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 80,
+              child: TextField(
+                decoration: InputDecoration(
+                    hintText: 'Search Food',
+                    hintStyle: TextStyle(color: Colors.white, fontSize: 15),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
+                    filled: true,
+                    fillColor: Color(0xff3b3b3b),
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(15))),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                height: 120,
+                width: 400,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (BuildContext context, int position) {
+                      return foodCatergryContainer(position);
+                    },
+                    itemCount: listOfCatergry.length),
+              ),
+            ),
+            SizedBox(
+              height: 500,
+              width: 400,
+              child: GridView.builder(
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  return middleContainer(index);
                 },
-                itemCount: listOfCatergry.length),
-          ]),
-          SizedBox(
-            height: 20,
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) {
-              return middleContainer(index);
-            },
-            itemCount: 2,
-          )
-        ],
+                itemCount: listOfCatergry.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    crossAxisCount: 2),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -124,9 +141,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget middleContainer(int po) {
     return Container(
-      height: 270,
-      width: 220,
-      padding: EdgeInsets.all(30),
+      height: 660,
+      width: 200,
       decoration: BoxDecoration(
           color: Color(0xff3b3b3b), borderRadius: BorderRadius.circular(20)),
       child: Column(
@@ -147,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 102),
+            padding: const EdgeInsets.only(left: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
