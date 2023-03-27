@@ -37,19 +37,19 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           width: 80,
           height: 80,
-          margin: EdgeInsets.only(left: 10),
+          margin: const EdgeInsets.only(left: 10),
           decoration: BoxDecoration(
               color: Colors.grey,
               borderRadius: BorderRadius.circular(10),
               image: DecorationImage(
                   image: AssetImage('images/${listOfCatergry[po]}'))),
         ),
-        SizedBox(
+        const SizedBox(
           height: 5,
         ),
         Text(
           listOfCatergryName[po].toString(),
-          style: TextStyle(color: Colors.white, fontSize: 15),
+          style: const TextStyle(color: Colors.white, fontSize: 12),
         )
       ],
     );
@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Color(0xff2b2b2b),
         elevation: 0.0,
         leading: Icon(Icons.sort),
-        actions: [
+        actions: const [
           Padding(
             padding: EdgeInsets.all(9.0),
             child: CircleAvatar(
@@ -77,13 +77,14 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 80,
+            Container(
+              height: 60,
+              padding: const EdgeInsets.all(5),
               child: TextField(
                 decoration: InputDecoration(
                     hintText: 'Search Food',
                     hintStyle: TextStyle(color: Colors.white, fontSize: 15),
-                    prefixIcon: Icon(
+                    prefixIcon: const Icon(
                       Icons.search,
                       color: Colors.white,
                     ),
@@ -95,24 +96,18 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             SizedBox(
-              height: 10,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                height: 120,
-                width: 400,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, int position) {
-                      return foodCatergryContainer(position);
-                    },
-                    itemCount: listOfCatergry.length),
-              ),
+              height: 120,
+              width: 500,
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, int position) {
+                    return foodCatergryContainer(position);
+                  },
+                  itemCount: listOfCatergry.length),
             ),
             SizedBox(
-              height: 500,
-              width: 400,
+              height: 930,
+              width: 700,
               child: GridView.builder(
                 scrollDirection: Axis.vertical,
                 itemBuilder: (context, index) {
@@ -131,35 +126,36 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget makeStart() {
+  Widget makeStar(Color col) {
     return Icon(
       Icons.star,
-      color: Colors.white,
+      color: col,
       size: 20,
     );
   }
 
   Widget middleContainer(int po) {
+    var i = getRedstart();
     return Container(
-      height: 660,
-      width: 200,
+      height: 950,
+      width: 500,
       decoration: BoxDecoration(
-          color: Color(0xff3b3b3b), borderRadius: BorderRadius.circular(20)),
+          color: const Color(0xff3b3b3b),
+          borderRadius: BorderRadius.circular(20)),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircleAvatar(
             backgroundImage: AssetImage("images/${listOfCatergry[po]}"),
-            radius: 60,
+            radius: 45,
           ),
           ListTile(
             leading: Text(
               listOfCatergryName[po],
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: const TextStyle(fontSize: 15, color: Colors.white),
             ),
-            trailing: Text(
+            trailing: const Text(
               '\$123',
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: TextStyle(fontSize: 15, color: Colors.white),
             ),
           ),
           Padding(
@@ -167,16 +163,20 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                makeStart(),
-                makeStart(),
-                makeStart(),
-                makeStart(),
-                makeStart()
+                makeStar(i >= 1 ? Colors.red : Colors.white),
+                makeStar(i >= 2 ? Colors.red : Colors.white),
+                makeStar(i >= 3 ? Colors.red : Colors.white),
+                makeStar(i >= 4 ? Colors.red : Colors.white),
+                makeStar(i >= 5 ? Colors.red : Colors.white)
               ],
             ),
           )
         ],
       ),
     );
+  }
+
+  getRedstart() {
+    return 3;
   }
 }
