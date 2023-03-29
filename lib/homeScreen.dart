@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     "Recipe",
     "Pizza",
     "Drink",
-    "tt"
+    "Sweet"
   ];
 
   Widget foodCatergryContainer(int po) {
@@ -78,23 +78,24 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              height: 60,
-              padding: const EdgeInsets.all(5),
-              child: TextField(
-                decoration: InputDecoration(
-                    hintText: 'Search Food',
-                    hintStyle: TextStyle(color: Colors.white, fontSize: 15),
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: Colors.white,
-                    ),
-                    filled: true,
-                    fillColor: Color(0xff3b3b3b),
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(15))),
+              child: Center(
+                child: TextField(
+                  decoration: InputDecoration(
+
+                      hintText: 'Search Food',
+                      hintStyle: TextStyle(color: Colors.white, fontSize: 15),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.white,
+                      ),
+                      filled: true,
+                      fillColor: Color(0xff3b3b3b),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(15))),
+                ),
               ),
-            ),
+            ),const SizedBox(height: 12,),
             SizedBox(
               height: 120,
               width: 500,
@@ -109,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 930,
               width: 700,
               child: GridView.builder(
+                physics: const ScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 itemBuilder: (context, index) {
                   return middleContainer(index);
@@ -137,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget middleContainer(int po) {
     var i = getRedstart();
     return Container(
-      height: 950,
+      height: 300,
       width: 500,
       decoration: BoxDecoration(
           color: const Color(0xff3b3b3b),
